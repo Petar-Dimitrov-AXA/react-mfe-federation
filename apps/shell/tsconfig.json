@@ -7,14 +7,14 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      //     "@vite-plugin-federation/shared-ui": ["libs/shared-ui/src"],
-      //     "@vite-plugin-federation/shared-ui/*": ["libs/shared-ui/src/*"],
-      "@vite-plugin-federation/app1": ["apps/app1/src"],
-      "@vite-plugin-federation/app1/*": ["apps/app1/src/*"],
-      "@vite-plugin-federation/app2": ["apps/app2/src"],
-      "@vite-plugin-federation/app2/*": ["apps/app2/src/*"],
-      "@vite-plugin-federation/app3": ["apps/app3/src"],
-      "@vite-plugin-federation/app3/*": ["apps/app3/src/*"]
+      "@react-mfe-federation/shared-ui": ["libs/shared-ui/src"],
+      "@react-mfe-federation/shared-ui/*": ["libs/shared-ui/src/*"],
+      "@react-mfe-federation/app1": ["apps/app1/src"],
+      "@react-mfe-federation/app1/*": ["apps/app1/src/*"],
+      "@react-mfe-federation/app2": ["apps/app2/src"],
+      "@react-mfe-federation/app2/*": ["apps/app2/src/*"],
+      "@react-mfe-federation/app3": ["apps/app3/src"],
+      "@react-mfe-federation/app3/*": ["apps/app3/src/*"]
     }
   }
 }

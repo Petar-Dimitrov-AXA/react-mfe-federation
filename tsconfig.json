@@ -1,0 +1,43 @@
+{
+    "compilerOptions": {
+      "target": "ESNext",
+      "useDefineForClassFields": true,
+      "lib": [
+        "DOM",
+        "DOM.Iterable",
+        "ESNext"
+      ],
+      "allowJs": false,
+      "skipLibCheck": true,
+      "esModuleInterop": false,
+      "allowSyntheticDefaultImports": true,
+      "strict": true,
+      "forceConsistentCasingInFileNames": true,
+      "module": "ESNext",
+      "moduleResolution": "Node",
+      "resolveJsonModule": true,
+      "isolatedModules": true,
+      "noEmit": false,
+      "jsx": "react-jsx",
+      "baseUrl": ".",
+      "sourceMap": false,
+      "paths": {
+        "@react-mfe-federation/shared-ui": ["libs/shared-ui/src"],
+        "@react-mfe-federation/shared-ui/*": ["libs/shared-ui/src/*"],
+        "@react-mfe-federation/app1": ["apps/app1/src"],
+        "@react-mfe-federation/app1/*": ["apps/app1/src/*"],
+        "@react-mfe-federation/app2": ["apps/app2/src"],
+        "@react-mfe-federation/app2/*": ["apps/app2/src/*"],
+        "@react-mfe-federation/app3": ["apps/app3/src"],
+        "@react-mfe-federation/app3/*": ["apps/app3/src/*"]
+      }
+    },
+    "include": [
+      "apps/*/src",
+      "libs/*/src"
+    ],
+    "exclude": [
+      "node_modules"
+    ],
+  }
+  
