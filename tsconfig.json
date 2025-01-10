@@ -20,17 +20,7 @@
       "noEmit": false,
       "jsx": "react-jsx",
       "baseUrl": ".",
-      "sourceMap": false,
-      "paths": {
-        "@react-mfe-federation/shared-ui": ["libs/shared-ui/src"],
-        "@react-mfe-federation/shared-ui/*": ["libs/shared-ui/src/*"],
-        "@react-mfe-federation/app1": ["apps/app1/src"],
-        "@react-mfe-federation/app1/*": ["apps/app1/src/*"],
-        "@react-mfe-federation/app2": ["apps/app2/src"],
-        "@react-mfe-federation/app2/*": ["apps/app2/src/*"],
-        "@react-mfe-federation/app3": ["apps/app3/src"],
-        "@react-mfe-federation/app3/*": ["apps/app3/src/*"]
-      }
+      "sourceMap": false
     },
     "include": [
       "apps/*/src",

@@ -2,7 +2,7 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": {
       "composite": true,
-      "outDir": "../../dist/libs/shared-ui",
+      "outDir": "./dist",
       "noEmit": false
     },
     "include": ["src"],
