@@ -2,14 +2,13 @@ import { Suspense } from 'react'
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
 import './App.css'
 import React from 'react';
+import { Sidebar } from '@react-mfe-federation/shared-ui';
 
 function App() {
-  //@ts-ignore
   const App1 = React.lazy(() => import('app1/App'));
-  //@ts-ignore
   const App2 = React.lazy(() => import('app2/App'));
-  //@ts-ignore
   const App3 = React.lazy(() => import('app3/App'));
+
   return (
     <>
     <BrowserRouter>
@@ -18,6 +17,8 @@ function App() {
         <Link to="/app2">App 2</Link>
         <Link to="/app3">App 3</Link>
       </nav>
+
+      <Sidebar list={['App 1', 'App 2', 'App 3']} />
 
       <Suspense fallback={<div>Loading...</div>}>
         <Routes>

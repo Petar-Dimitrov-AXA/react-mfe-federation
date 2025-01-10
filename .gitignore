@@ -9,3 +9,5 @@ apps/*/coverage
 libs/*/node_modules
 libs/*/dist
 libs/*/coverage
+
+package-lock.json
