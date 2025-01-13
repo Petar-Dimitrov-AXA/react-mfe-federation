@@ -4,6 +4,10 @@ on:
   workflow_dispatch:
   push:
     branches: [ main ]
+    paths:
+      - 'client/**'
+      - 'server/**'
+      - 'libs/**'
 
 jobs:
   build-and-push:
@@ -37,14 +41,14 @@ jobs:
           docker build \
             --build-arg APP_NAME=${{ matrix.app }} \
             --build-arg PORT=${{ steps.set-port.outputs.PORT }} \
-            -t "${{ secrets.REGISTRY }}/${{ secrets.ORGANIZATION }}/${{ matrix.app }}:${{ github.sha }}" \
+            -t "quay.io/${{ secrets.ORGANIZATION }}/${{ matrix.app }}:${{ github.sha }}" \
             -f Dockerfile.template .
           
           # Login to registry
-          echo ${{ secrets.REGISTRY_TOKEN }} | docker login ${{ secrets.REGISTRY }} -u "${{ secrets.ORGANIZATION }}" --password-stdin
+          echo ${{ secrets.REGISTRY_TOKEN }} | docker login quay.io -u "${{ secrets.ORGANIZATION }}" --password-stdin
           
           # Push the image
-          docker push "${{ secrets.REGISTRY }}/${{ secrets.ORGANIZATION }}/${{ matrix.app }}:${{ github.sha }}"
+          docker push "quay.io/${{ secrets.ORGANIZATION }}/${{ matrix.app }}:${{ github.sha }}"
 
       - name: Update Deployment
         run: |

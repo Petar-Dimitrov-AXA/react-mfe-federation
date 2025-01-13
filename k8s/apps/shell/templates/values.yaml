@@ -1,5 +1,5 @@
 image:
-  repository: quay.io/dimitrovpetar36/shell
+  repository: quay.io/${{ secrets.ORGANIZATION }}/shell
   tag: latest
 
 service:
