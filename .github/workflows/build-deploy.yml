@@ -29,22 +29,22 @@ jobs:
           fi
 
       - name: Build and push image
-        env:
-          REGISTRY: ${{ secrets.REGISTRY }}
-          ORGANIZATION: ${{ secrets.ORGANIZATION }}
         run: |
+          # Print variables for debugging
+          echo "Building for app: ${{ matrix.app }}"
+          
           # Build the image
           docker build \
             --build-arg APP_NAME=${{ matrix.app }} \
             --build-arg PORT=${{ steps.set-port.outputs.PORT }} \
-            -t ${REGISTRY}/${ORGANIZATION}/${{ matrix.app }}:${{ github.sha }} \
+            -t "${{ secrets.REGISTRY }}/${{ secrets.ORGANIZATION }}/${{ matrix.app }}:${{ github.sha }}" \
             -f Dockerfile.template .
           
           # Login to registry
-          echo ${{ secrets.REGISTRY_TOKEN }} | docker login ${REGISTRY} -u ${{ secrets.ORGANIZATION }} --password-stdin
+          echo ${{ secrets.REGISTRY_TOKEN }} | docker login ${{ secrets.REGISTRY }} -u "${{ secrets.ORGANIZATION }}" --password-stdin
           
           # Push the image
-          docker push ${REGISTRY}/${ORGANIZATION}/${{ matrix.app }}:${{ github.sha }}
+          docker push "${{ secrets.REGISTRY }}/${{ secrets.ORGANIZATION }}/${{ matrix.app }}:${{ github.sha }}"
 
       - name: Update Deployment
         run: |
