@@ -1,15 +1,13 @@
 name: Build and Deploy to OpenShift
 
 on:
+  workflow_dispatch:
   push:
     branches: [ main ]
     paths:
       - 'client/**'
       - 'server/**'
       - 'libs/**'
-      - 'k8s/**'
-  pull_request:
-    branches: [ main ]
 
 jobs:
   build-and-push:
@@ -21,17 +19,28 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Set port number
+        id: set-port
+        run: |
+          if [ "${{ matrix.app }}" = "shell" ]; then
+            echo "PORT=3000" >> $GITHUB_OUTPUT
+          elif [ "${{ matrix.app }}" = "app1" ]; then
+            echo "PORT=3001" >> $GITHUB_OUTPUT
+          elif [ "${{ matrix.app }}" = "app2" ]; then
+            echo "PORT=3002" >> $GITHUB_OUTPUT
+          elif [ "${{ matrix.app }}" = "app3" ]; then
+            echo "PORT=3003" >> $GITHUB_OUTPUT
+          fi
+
       - name: Build and push image
         env:
           REGISTRY: ${{ secrets.REGISTRY }}
           ORGANIZATION: ${{ secrets.ORGANIZATION }}
         run: |
-          PORT=$([ "${{ matrix.app }}" == "shell" ] && echo "3000" || echo "300${matrix.app: -1}")
-          
           # Build the image
           docker build \
             --build-arg APP_NAME=${{ matrix.app }} \
-            --build-arg PORT=$PORT \
+            --build-arg PORT=${{ steps.set-port.outputs.PORT }} \
             -t ${REGISTRY}/${ORGANIZATION}/${{ matrix.app }}:${{ github.sha }} \
             -f Dockerfile.template .
           
