@@ -23,7 +23,7 @@
       "sourceMap": false
     },
     "include": [
-      "apps/*/src",
+      "client/*/src",
       "libs/*/src"
     ],
     "exclude": [
