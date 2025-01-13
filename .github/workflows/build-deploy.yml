@@ -1,0 +1,53 @@
+name: Build and Deploy to OpenShift
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'client/**'
+      - 'server/**'
+      - 'libs/**'
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        app: [app1, app2, app3, shell]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build and push image
+        env:
+          REGISTRY: ${{ secrets.REGISTRY }}
+          ORGANIZATION: ${{ secrets.ORGANIZATION }}
+        run: |
+          PORT=$([ "${{ matrix.app }}" == "shell" ] && echo "3000" || echo "300${matrix.app: -1}")
+          
+          # Build the image
+          docker build \
+            --build-arg APP_NAME=${{ matrix.app }} \
+            --build-arg PORT=$PORT \
+            -t ${REGISTRY}/${ORGANIZATION}/${{ matrix.app }}:${{ github.sha }} \
+            -f Dockerfile.template .
+          
+          # Login to registry
+          echo ${{ secrets.REGISTRY_TOKEN }} | docker login ${REGISTRY} -u ${{ secrets.ORGANIZATION }} --password-stdin
+          
+          # Push the image
+          docker push ${REGISTRY}/${ORGANIZATION}/${{ matrix.app }}:${{ github.sha }}
+
+      - name: Update Deployment
+        run: |
+          # Update image tag in values.yaml
+          yq eval ".image.tag = \"${{ github.sha }}\"" -i k8s/apps/${{ matrix.app }}/values.yaml
+          
+          # Commit and push the updated manifest
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
+          git add k8s/apps/${{ matrix.app }}/values.yaml
+          git commit -m "Update ${{ matrix.app }} image tag to ${{ github.sha }}"
+          git push
