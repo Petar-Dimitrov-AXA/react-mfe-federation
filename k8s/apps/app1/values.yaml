@@ -1,6 +1,5 @@
 image:
   repository: quay.io/dimitrovpetar36/app1
-  tag: b47b622c71868aea50ad3cd03e8494bb63281784
 service:
   port: 3001
 route:
