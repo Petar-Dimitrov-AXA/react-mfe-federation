@@ -43,7 +43,7 @@ jobs:
           docker build \
             --build-arg APP_NAME=${{ matrix.app }} \
             --build-arg PORT=${{ steps.set-port.outputs.PORT }} \
-            -t "quay.io/${{ secrets.ORGANIZATION }}/${{ matrix.app }}:${{ github.sha }}" \
+            -t "quay.io/dimitrovpetar36+react_mfe/${{ matrix.app }}:${{ github.sha }}" \
             -f Dockerfile.template .
           
           # Login to registry
