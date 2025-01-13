@@ -1,3 +1,5 @@
 spring:
   application:
-    name: app1
+    name: shell
+server:
+  port: 3000

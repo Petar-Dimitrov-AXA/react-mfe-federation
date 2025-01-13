@@ -1,3 +1,5 @@
 spring:
   application:
     name: app2
+server:
+  port: 3002
