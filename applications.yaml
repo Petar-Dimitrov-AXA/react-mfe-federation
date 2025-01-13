@@ -9,6 +9,9 @@ spec:
     repoURL: https://github.com/PetarDimitrov91/react-mfe-federation.git
     targetRevision: main
     path: k8s/apps/app1
+    helm:
+      valueFiles:
+        - values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: am-hub
@@ -28,6 +31,9 @@ spec:
     repoURL: https://github.com/PetarDimitrov91/react-mfe-federation.git
     targetRevision: main
     path: k8s/apps/app2
+    helm:
+      valueFiles:
+        - values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: am-hub
@@ -47,6 +53,9 @@ spec:
     repoURL: https://github.com/PetarDimitrov91/react-mfe-federation.git
     targetRevision: main
     path: k8s/apps/app3
+    helm:
+      valueFiles:
+        - values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: am-hub
@@ -66,6 +75,9 @@ spec:
     repoURL: https://github.com/PetarDimitrov91/react-mfe-federation.git
     targetRevision: main
     path: k8s/apps/shell
+    helm:
+      valueFiles:
+        - values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: am-hub
