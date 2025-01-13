@@ -1,4 +1,4 @@
-name: Build and Deploy to OpenShift
+name: Build and Push Images
 
 on:
   workflow_dispatch:
@@ -39,16 +39,17 @@ jobs:
         run: |
           echo "Building for app: ${{ matrix.app }}"
           
-          IMAGE_NAME="quay.io/dimitrovpetar36/${{ matrix.app }}:${{ github.sha }}"
-          echo "Building image: $IMAGE_NAME"
-          
+          # Build with both SHA and latest tags
           docker build \
             --build-arg APP_NAME=${{ matrix.app }} \
             --build-arg PORT=${{ steps.set-port.outputs.PORT }} \
-            -t "$IMAGE_NAME" \
+            -t "quay.io/dimitrovpetar36/${{ matrix.app }}:${{ github.sha }}" \
+            -t "quay.io/dimitrovpetar36/${{ matrix.app }}:latest" \
             -f Dockerfile .
           
-          docker push "$IMAGE_NAME"
+          # Push both tags
+          docker push "quay.io/dimitrovpetar36/${{ matrix.app }}:${{ github.sha }}"
+          docker push "quay.io/dimitrovpetar36/${{ matrix.app }}:latest"
 
 # setup tag update if needed
 
