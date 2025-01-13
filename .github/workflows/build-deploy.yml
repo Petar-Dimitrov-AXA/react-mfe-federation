@@ -49,7 +49,7 @@ jobs:
             --build-arg APP_NAME=${{ matrix.app }} \
             --build-arg PORT=${{ steps.set-port.outputs.PORT }} \
             -t "$IMAGE_NAME" \
-            -f Dockerfile.template .
+            -f Dockerfile .
           
           # Push the image
           docker push "$IMAGE_NAME"
