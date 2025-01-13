@@ -28,6 +28,12 @@ jobs:
             echo "PORT=3003" >> $GITHUB_OUTPUT
           fi
 
+      - name: Debug Variables
+        run: |
+          echo "Organization: ${{ secrets.ORGANIZATION }}"
+          echo "App: ${{ matrix.app }}"
+          echo "Git SHA: ${{ github.sha }}"
+
       - name: Build and push image
         run: |
           # Print variables for debugging
