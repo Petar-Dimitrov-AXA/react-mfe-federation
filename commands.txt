@@ -1,0 +1,8 @@
+#get argocd-server route
+oc get route argocd-server -n openshift-gitops
+
+get password for argocd-server
+[System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String((oc get secret argocd-cluster -n openshift-gitops -o jsonpath='{.data.admin\.password}')))
+
+#get pods in openshift-gitops namespace
+oc get pods -n openshift-gitops

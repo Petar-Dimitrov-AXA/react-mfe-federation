@@ -1,0 +1,75 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: app1
+  namespace: openshift-gitops
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/PetarDimitrov91/react-mfe-federation.git
+    targetRevision: main
+    path: k8s/apps/app1
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: am-hub
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: app2
+  namespace: openshift-gitops
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/PetarDimitrov91/react-mfe-federation.git
+    targetRevision: main
+    path: k8s/apps/app2
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: am-hub
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: app3
+  namespace: openshift-gitops
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/PetarDimitrov91/react-mfe-federation.git
+    targetRevision: main
+    path: k8s/apps/app3
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: am-hub
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: shell
+  namespace: openshift-gitops
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/PetarDimitrov91/react-mfe-federation.git
+    targetRevision: main
+    path: k8s/apps/shell
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: am-hub
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
