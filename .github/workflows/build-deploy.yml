@@ -15,19 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      # Set up organization name with encoded special characters
-      - name: Set organization name
-        id: set-org
-        run: |
-          ORG="${{ secrets.ORGANIZATION }}"
-          # First encode + to %2B, then encode _ to %5F
-          ENCODED_ORG="${ORG//+/%2B}"
-          ENCODED_ORG="${ENCODED_ORG//_/%5F}"
-          echo "encoded_org=$ENCODED_ORG" >> $GITHUB_OUTPUT
-          echo "Original org: $ORG"
-          echo "Encoded org: $ENCODED_ORG"
-
-      # Login using original organization name (with + and _)
+      # Login using organization name
       - name: Login to Quay.io
         uses: docker/login-action@v3
         with:
@@ -52,10 +40,9 @@ jobs:
         run: |
           # Print variables for debugging
           echo "Building for app: ${{ matrix.app }}"
-          echo "Using organization: ${{ steps.set-org.outputs.encoded_org }}"
           
-          # Build the image using encoded organization name
-          IMAGE_NAME="quay.io/${{ steps.set-org.outputs.encoded_org }}/${{ matrix.app }}:${{ github.sha }}"
+          # Build the image using the correct organization name
+          IMAGE_NAME="quay.io/dimitrovpetar36/${{ matrix.app }}:${{ github.sha }}"
           echo "Building image: $IMAGE_NAME"
           
           docker build \
@@ -70,7 +57,7 @@ jobs:
       - name: Update Deployment
         run: |
           # Update image repository and tag in values.yaml
-          yq eval ".image.repository = \"quay.io/${{ steps.set-org.outputs.encoded_org }}/${{ matrix.app }}\"" -i k8s/apps/${{ matrix.app }}/values.yaml
+          yq eval ".image.repository = \"quay.io/dimitrovpetar36/${{ matrix.app }}\"" -i k8s/apps/${{ matrix.app }}/values.yaml
           yq eval ".image.tag = \"${{ github.sha }}\"" -i k8s/apps/${{ matrix.app }}/values.yaml
           
           # Commit and push the updated manifest
