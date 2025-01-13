@@ -15,6 +15,22 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      # Set up organization name with encoded plus
+      - name: Set organization name
+        id: set-org
+        run: |
+          ORG="${{ secrets.ORGANIZATION }}"
+          ENCODED_ORG="${ORG//+/%2B}"
+          echo "encoded_org=$ENCODED_ORG" >> $GITHUB_OUTPUT
+
+      # Login using original organization name
+      - name: Login to Quay.io
+        uses: docker/login-action@v3
+        with:
+          registry: quay.io
+          username: ${{ secrets.ORGANIZATION }}
+          password: ${{ secrets.REGISTRY_TOKEN }}
+
       - name: Set port number
         id: set-port
         run: |
@@ -28,33 +44,25 @@ jobs:
             echo "PORT=3003" >> $GITHUB_OUTPUT
           fi
 
-      - name: Debug Variables
-        run: |
-          echo "Organization: ${{ secrets.ORGANIZATION }}"
-          echo "App: ${{ matrix.app }}"
-          echo "Git SHA: ${{ github.sha }}"
-
       - name: Build and push image
         run: |
           # Print variables for debugging
           echo "Building for app: ${{ matrix.app }}"
           
-          # Build the image
+          # Build the image using encoded organization name
           docker build \
             --build-arg APP_NAME=${{ matrix.app }} \
             --build-arg PORT=${{ steps.set-port.outputs.PORT }} \
-            -t "quay.io/${{ secrets.ORGANIZATION }}/${{ matrix.app }}:${{ github.sha }}" \
-            -f Dockerfile .
-          
-          # Login to registry
-          echo ${{ secrets.REGISTRY_TOKEN }} | docker login quay.io -u "${{ secrets.ORGANIZATION }}" --password-stdin
+            -t "quay.io/${{ steps.set-org.outputs.encoded_org }}/${{ matrix.app }}:${{ github.sha }}" \
+            -f Dockerfile.template .
           
           # Push the image
-          docker push "quay.io/${{ secrets.ORGANIZATION }}/${{ matrix.app }}:${{ github.sha }}"
+          docker push "quay.io/${{ steps.set-org.outputs.encoded_org }}/${{ matrix.app }}:${{ github.sha }}"
 
       - name: Update Deployment
         run: |
-          # Update image tag in values.yaml
+          # Update image repository and tag in values.yaml
+          yq eval ".image.repository = \"quay.io/${{ steps.set-org.outputs.encoded_org }}/${{ matrix.app }}\"" -i k8s/apps/${{ matrix.app }}/values.yaml
           yq eval ".image.tag = \"${{ github.sha }}\"" -i k8s/apps/${{ matrix.app }}/values.yaml
           
           # Commit and push the updated manifest
