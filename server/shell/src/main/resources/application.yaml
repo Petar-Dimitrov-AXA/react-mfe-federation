@@ -3,3 +3,11 @@ spring:
     name: shell
 server:
   port: 3000
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: health

@@ -3,3 +3,11 @@ spring:
     name: app1
 server:
   port: 3001
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: health
