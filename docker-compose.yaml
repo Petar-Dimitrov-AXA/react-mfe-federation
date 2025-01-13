@@ -1,35 +1,48 @@
-version: '3.8'
-
 services:
   app1:
     build:
       context: .
       dockerfile: Dockerfile
       args:
-        - APP_NAME=app1
+        APP_NAME: app1
+        PORT: 3001
     ports:
-      - "8081:8080"
+      - "3001:3001"
+    environment:
+      - SERVER_PORT=3001
+
   app2:
     build:
       context: .
       dockerfile: Dockerfile
       args:
-        - APP_NAME=app2
+        APP_NAME: app2
+        PORT: 3002
     ports:
-      - "8082:8080"
+      - "3002:3002"
+    environment:
+      - SERVER_PORT=3002
+
   app3:
     build:
       context: .
       dockerfile: Dockerfile
       args:
-        - APP_NAME=app3
+        APP_NAME: app3
+        PORT: 3003
     ports:
-      - "8083:8080"
+      - "3003:3003"
+    environment:
+      - SERVER_PORT=3003
+
   shell:
     build:
       context: .
       dockerfile: Dockerfile
       args:
-        - APP_NAME=shell
+        APP_NAME: shell
+        PORT: 3000
     ports:
-      - "8084:8080"
+      - "3000:3000"
+    environment:
+      - SERVER_PORT=3000

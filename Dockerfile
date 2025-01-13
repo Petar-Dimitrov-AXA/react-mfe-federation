@@ -1,7 +1,7 @@
 ARG APP_NAME
 ARG PORT
 
-FROM node:18-alpine AS frontend-builder
+FROM node:20-alpine AS frontend-builder
 WORKDIR /app
 COPY package*.json ./
 COPY ./client ./client
@@ -11,7 +11,7 @@ COPY tsconfig.json .
 RUN npm install
 RUN npm run build
 
-FROM eclipse-temurin:17-jdk-alpine AS backend-builder
+FROM eclipse-temurin:21-jdk-alpine AS backend-builder
 ARG APP_NAME
 WORKDIR /app/server/${APP_NAME}
 # Copy the specific app's backend files
@@ -24,7 +24,7 @@ COPY ./server/${APP_NAME}/src ./src
 RUN chmod +x ./mvnw
 RUN ./mvnw clean package -DskipTests
 
-FROM eclipse-temurin:17-jre-alpine
+FROM eclipse-temurin:21-jre-alpine
 ARG APP_NAME
 ARG PORT
 WORKDIR /app
