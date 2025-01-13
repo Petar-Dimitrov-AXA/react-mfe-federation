@@ -11,9 +11,9 @@ export default defineConfig({
     federation({
       name: "shell",
       remotes: {
-        app1: "http://localhost:3001/assets/app1.js",
-        app2: "http://localhost:3002/assets/app2.js",
-        app3: "http://localhost:3003/assets/app3.js",
+        app1: "http://app1-am-hub.apps-crc.testing/assets/app1.js",
+        app2: "http://app2-am-hub.apps-crc.testing/assets/app2.js",
+        app3: "http://app3-am-hub.apps-crc.testing/assets/app3.js",
       },
       shared: ["react", "react-dom","react-router-dom"],
     })
