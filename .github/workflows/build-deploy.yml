@@ -42,12 +42,13 @@ jobs:
               - 'libs/**'
   build-and-push:
     needs: detect-changes
-    if: ${{ needs.detect-changes.outputs[matrix.app] == 'true' || needs.detect-changes.outputs.build_all == 'true' }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
         app: [app1, app2, app3, shell]
-
+    if: |
+      needs.detect-changes.outputs[format('{0}', matrix.app)] == 'true' || 
+      needs.detect-changes.outputs.build_all == 'true'
     steps:
       - uses: actions/checkout@v3
 
