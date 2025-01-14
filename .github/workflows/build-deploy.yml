@@ -23,23 +23,28 @@ jobs:
           echo "$CHANGED_FILES"
           
           if echo "$CHANGED_FILES" | grep -q -E ".github|applications.yaml|k8s/|Dockerfile"; then
-            # All apps as separate array items
-            APPS='["app1","app2","app3","shell"]'
+            echo "apps=[\"app1\",\"app2\",\"app3\",\"shell\"]" >> $GITHUB_OUTPUT
           else
             TO_BUILD=()
-            [[ $(echo "$CHANGED_FILES" | grep -E "client/app1/|server/app1/|libs/") ]] && TO_BUILD+=("\"app1\"")
-            [[ $(echo "$CHANGED_FILES" | grep -E "client/app2/|server/app2/|libs/") ]] && TO_BUILD+=("\"app2\"")
-            [[ $(echo "$CHANGED_FILES" | grep -E "client/app3/|server/app3/|libs/") ]] && TO_BUILD+=("\"app3\"")
-            [[ $(echo "$CHANGED_FILES" | grep -E "client/shell/|server/shell/|libs/") ]] && TO_BUILD+=("\"shell\"")
+            if echo "$CHANGED_FILES" | grep -q -E "client/app1/|server/app1/|libs/"; then
+              TO_BUILD+=("\"app1\"")
+            fi
+            if echo "$CHANGED_FILES" | grep -q -E "client/app2/|server/app2/|libs/"; then
+              TO_BUILD+=("\"app2\"")
+            fi
+            if echo "$CHANGED_FILES" | grep -q -E "client/app3/|server/app3/|libs/"; then
+              TO_BUILD+=("\"app3\"")
+            fi
+            if echo "$CHANGED_FILES" | grep -q -E "client/shell/|server/shell/|libs/"; then
+              TO_BUILD+=("\"shell\"")
+            fi
           
             if [ ${#TO_BUILD[@]} -gt 0 ]; then
-              APPS="[${TO_BUILD[*]}]"
+              echo "apps=[${TO_BUILD[*]}]" >> $GITHUB_OUTPUT
             else
-              APPS='[]'
+              echo "apps=[]" >> $GITHUB_OUTPUT
             fi
           fi
-          echo "apps=$APPS" >> "$GITHUB_OUTPUT"
-          echo "Final APPS: $APPS"
 
   build-and-push:
     needs: check-changes
