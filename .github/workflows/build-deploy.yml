@@ -15,6 +15,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install jq
+        run: sudo apt-get install jq
+
       - id: changes
         name: Detect changes
         run: |
@@ -23,24 +26,27 @@ jobs:
           echo "$CHANGED_FILES"
           
           if echo "$CHANGED_FILES" | grep -q -E ".github|applications.yaml|k8s/|Dockerfile"; then
-            echo "apps=[\"app1\",\"app2\",\"app3\",\"shell\"]" >> $GITHUB_OUTPUT
+            # Convert array to JSON format using jq
+            echo "apps=$(echo '["app1","app2","app3","shell"]' | jq -c .)" >> $GITHUB_OUTPUT
           else
             TO_BUILD=()
             if echo "$CHANGED_FILES" | grep -q -E "client/app1/|server/app1/|libs/"; then
-              TO_BUILD+=("\"app1\"")
+              TO_BUILD+=('app1')
             fi
             if echo "$CHANGED_FILES" | grep -q -E "client/app2/|server/app2/|libs/"; then
-              TO_BUILD+=("\"app2\"")
+              TO_BUILD+=('app2')
             fi
             if echo "$CHANGED_FILES" | grep -q -E "client/app3/|server/app3/|libs/"; then
-              TO_BUILD+=("\"app3\"")
+              TO_BUILD+=('app3')
             fi
             if echo "$CHANGED_FILES" | grep -q -E "client/shell/|server/shell/|libs/"; then
-              TO_BUILD+=("\"shell\"")
+              TO_BUILD+=('shell')
             fi
           
             if [ ${#TO_BUILD[@]} -gt 0 ]; then
-              echo "apps=[${TO_BUILD[*]}]" >> $GITHUB_OUTPUT
+              # Convert array to JSON format
+              JSON_ARRAY=$(printf '%s\n' "${TO_BUILD[@]}" | jq -R . | jq -s .)
+              echo "apps=$JSON_ARRAY" >> $GITHUB_OUTPUT
             else
               echo "apps=[]" >> $GITHUB_OUTPUT
             fi
