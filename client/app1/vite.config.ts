@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import federation from '@originjs/vite-plugin-federation'
+import {resolve} from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -13,20 +14,41 @@ export default defineConfig({
       exposes: {
         "./App": "./src/App",
       },
-      shared: ["react", "react-dom","react-router-dom"],
+      shared: {
+        react: {
+          version: '^18.0.0',
+          requiredVersion: '^18.0.0'
+        },
+        'react-dom': {
+          version: '^18.0.0',
+          requiredVersion: '^18.0.0'
+        },
+        'react-router-dom': {
+          version: 'auto'
+        }
+      }
     }),
   ],
   build: {
-    modulePreload: false,
     target: "esnext",
     minify: false,
     cssCodeSplit: false,
     outDir: "dist",
+    emptyOutDir: true,
+    sourcemap: false,
+    write: true,
     rollupOptions: {
+      preserveEntrySignatures: 'strict',
+      input: {
+        main: resolve(__dirname, 'index.html')
+
+      },
       output: {
-        assetFileNames: "assets/[name].[ext]",
-        entryFileNames: "assets/[name].js",
-        chunkFileNames: "assets/[name].js",
+        dir: 'dist',
+        format: 'esm',
+        entryFileNames: 'assets/[name].js',
+        chunkFileNames: 'assets/[name].[hash].js',
+        assetFileNames: 'assets/[name].[hash].[ext]'
       }
     }
   },
