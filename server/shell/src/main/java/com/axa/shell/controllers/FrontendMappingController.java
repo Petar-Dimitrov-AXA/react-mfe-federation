@@ -14,72 +14,31 @@ public class FrontendMappingController {
 
     private final FrontendCache frontendCache;
 
-    public static final String ROOT = "/";
-
     /**
-     * Inject system properties into the index.html that bootstraps the react-client.
-     *
-     * @return String html page
+     * Serve static assets (JS, CSS, images)
      */
-    @GetMapping(produces = "text/html")
-    public String getRootPage() {
-        return frontendCache.getReplacedFrontendApp();
+    @GetMapping(value = "/static/{file}/**")
+    public String getStaticFiles(@PathVariable("file") String file, HttpServletResponse response) {
+        String filePath = "static/" + file;
+
+        // Set content type based on file extension
+        if (file.endsWith(".js")) {
+            response.setHeader("content-type", "application/javascript");
+        } else if (file.endsWith(".css")) {
+            response.setHeader("content-type", "text/css");
+        } else if (file.endsWith(".png")) {
+            response.setHeader("content-type", "image/png");
+        }
+
+        return frontendCache.getFileContent(filePath);
     }
 
     /**
-     * Forward all requests to the frontend app
-     *
-     * @return String html page
+     * Forward all other requests to the frontend app
+     * This needs to be the last mapping
      */
-    @RequestMapping(value = { "/", "/{path:^(?!api|actuator).*$}/**" })
+    @RequestMapping(value = "/**", produces = "text/html")
     public String forward() {
-        return frontendCache.getReplacedFrontendApp();
-    }
-
-    @GetMapping(value = ROOT, produces = "text/html")
-    public String getRootPageToo() {
-        return frontendCache.getReplacedFrontendApp();
-    }
-
-    /**
-     * Serve Javascript
-     *
-     * @return String getJS
-     */
-    @GetMapping(value = "/static/{file}.js", produces = "application/javascript;charset=UTF-8")
-    public String getJS(HttpServletResponse response, @PathVariable("file") String file) {
-        response.setHeader("content-type", "application/javascript");
-        return frontendCache.getFileContent("static/" + file + ".js");
-    }
-
-    /**
-     * Serve CSS
-     *
-     * @return String getCSS
-     */
-    @GetMapping(value = "/static/{file}.css", produces = "text/css;charset=UTF-8")
-    public String getCSS(HttpServletResponse response, @PathVariable("file") String file) {
-        response.setHeader("content-type", "text/css");
-        return frontendCache.getFileContent("static/" + file + ".css");
-    }
-
-    @GetMapping(value = "/static/{file}.png", produces = "application/png")
-    public String getPng(@PathVariable("file") String file) {
-        return frontendCache.getFileContent("static/" + file + ".png");
-    }
-
-    @GetMapping(value = "/static/{file}")
-    public String getAnything(@PathVariable("file") String file) {
-        return frontendCache.getFileContent("static/" + file);
-    }
-
-    @GetMapping(value = "/{path:^(?!swagger-ui).*}", produces = "text/html")
-    public String getEverythingElseExceptSwaggerUi() {
-        return frontendCache.getReplacedFrontendApp();
-    }
-
-    @GetMapping(value = "/{path:^(?!swagger-ui).*}/**", produces = "text/html")
-    public String getEverythingElseInclSubpathsExceptSwaggerUi() {
         return frontendCache.getReplacedFrontendApp();
     }
 }
