@@ -48,4 +48,4 @@ export default defineConfig({
       "Access-Control-Allow-Origin": "*",
     },
   },
-})
+});
