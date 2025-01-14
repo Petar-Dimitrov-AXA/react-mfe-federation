@@ -26,6 +26,16 @@ public class FrontendMappingController {
         return frontendCache.getReplacedFrontendApp();
     }
 
+    /**
+     * Forward all requests to the frontend app
+     *
+     * @return String html page
+     */
+    @RequestMapping(value = { "/", "/{path:^(?!api|actuator).*$}/**" })
+    public String forward() {
+        return frontendCache.getReplacedFrontendApp();
+    }
+
     @GetMapping(value = ROOT, produces = "text/html")
     public String getRootPageToo() {
         return frontendCache.getReplacedFrontendApp();
