@@ -3,9 +3,9 @@ node_modules
 .idea
 .vscode/*
 
-apps/*/node_modules
-apps/*/dist
-apps/*/coverage
+client/*/node_modules
+client/*/dist
+client/*/coverage
 libs/*/node_modules
 libs/*/dist
 libs/*/coverage

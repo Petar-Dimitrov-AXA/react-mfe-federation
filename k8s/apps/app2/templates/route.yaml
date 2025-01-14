@@ -1,0 +1,11 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: app2
+spec:
+  host: {{ .Values.route.host }}
+  to:
+    kind: Service
+    name: app2
+  port:
+    targetPort: {{ .Values.service.port }}

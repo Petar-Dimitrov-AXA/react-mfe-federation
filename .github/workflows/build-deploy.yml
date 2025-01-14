@@ -1,0 +1,72 @@
+name: Build and Push Images
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        app: [app1, app2, app3, shell]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Login to Quay.io
+        uses: docker/login-action@v3
+        with:
+          registry: quay.io
+          username: ${{ secrets.ORGANIZATION }}
+          password: ${{ secrets.REGISTRY_TOKEN }}
+
+      - name: Set port number
+        id: set-port
+        run: |
+          if [ "${{ matrix.app }}" = "shell" ]; then
+            echo "PORT=3000" >> $GITHUB_OUTPUT
+          elif [ "${{ matrix.app }}" = "app1" ]; then
+            echo "PORT=3001" >> $GITHUB_OUTPUT
+          elif [ "${{ matrix.app }}" = "app2" ]; then
+            echo "PORT=3002" >> $GITHUB_OUTPUT
+          elif [ "${{ matrix.app }}" = "app3" ]; then
+            echo "PORT=3003" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build and push image
+        run: |
+          echo "Building for app: ${{ matrix.app }}"
+          
+          # Build with both SHA and latest tags
+          docker build \
+            --build-arg APP_NAME=${{ matrix.app }} \
+            --build-arg PORT=${{ steps.set-port.outputs.PORT }} \
+            -t "quay.io/dimitrovpetar36/${{ matrix.app }}:${{ github.sha }}" \
+            -t "quay.io/dimitrovpetar36/${{ matrix.app }}:latest" \
+            -f Dockerfile .
+          
+          # Push both tags
+          docker push "quay.io/dimitrovpetar36/${{ matrix.app }}:${{ github.sha }}"
+          docker push "quay.io/dimitrovpetar36/${{ matrix.app }}:latest"
+
+# setup tag update if needed
+
+#- name: Update Deployment
+#        run: |
+#          # Configure git
+#          git config --global user.name 'GitHub Actions'
+#          git config --global user.email 'actions@github.com'
+#
+#          # Pull latest changes
+#          git pull origin main
+#
+#          # Update values.yaml
+#          yq eval ".image.repository = \"quay.io/dimitrovpetar36/${{ matrix.app }}\"" -i k8s/apps/${{ matrix.app }}/values.yaml
+#          yq eval ".image.tag = \"${{ github.sha }}\"" -i k8s/apps/${{ matrix.app }}/values.yaml
+#
+#          # Add, commit and push
+#          git add k8s/apps/${{ matrix.app }}/values.yaml
+#          git commit -m "Update ${{ matrix.app }} image tag to ${{ github.sha }}"
+#          git push origin main

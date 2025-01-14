@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: app3
+server:
+  port: 3003
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: health

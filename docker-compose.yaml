@@ -1,0 +1,48 @@
+services:
+  app1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: app1
+        PORT: 3001
+    ports:
+      - "3001:3001"
+    environment:
+      - SERVER_PORT=3001
+
+  app2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: app2
+        PORT: 3002
+    ports:
+      - "3002:3002"
+    environment:
+      - SERVER_PORT=3002
+
+  app3:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: app3
+        PORT: 3003
+    ports:
+      - "3003:3003"
+    environment:
+      - SERVER_PORT=3003
+
+  shell:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: shell
+        PORT: 3000
+    ports:
+      - "3000:3000"
+    environment:
+      - SERVER_PORT=3000

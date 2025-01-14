@@ -10,7 +10,7 @@
     "build": "npm run build --workspaces --if-present",
     "preview": "npm run preview --workspace=@react-mfe-federation/shell",
     "start-all": "npm run start-all-concurrently",
-    "start-all-concurrently": "concurrently \"npm run dev --workspace=apps/app1\" \"npm run dev --workspace=apps/app2\" \"npm run dev --workspace=apps/app3\" \"npm run dev --workspace=@react-mfe-federation/shell\"",
+    "start-all-concurrently": "concurrently \"npm run dev --workspace=client/app1\" \"npm run dev --workspace=client/app2\" \"npm run dev --workspace=client/app3\" \"npm run dev --workspace=@react-mfe-federation/shell\"",
     "preview-all": "npm run build && concurrently \"npm run preview --workspace=@react-mfe-federation/app1\" \"npm run preview --workspace=@react-mfe-federation/app2\" \"npm run preview --workspace=@react-mfe-federation/app3\" \"npm run preview --workspace=@react-mfe-federation/shell\""
   },
   "keywords": [],
@@ -19,7 +19,7 @@
   "description": "",
   "private": "true",
   "workspaces": [
-    "apps/*",
+    "client/*",
     "libs/*"
   ],
   "dependencies": {

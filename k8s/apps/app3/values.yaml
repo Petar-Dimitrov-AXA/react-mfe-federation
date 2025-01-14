@@ -1,0 +1,10 @@
+image:
+  repository: quay.io/dimitrovpetar36/app3
+  tag: latest
+
+service:
+  port: 3003
+
+route:
+  enabled: true
+  host: app3-am-hub.apps-crc.testing

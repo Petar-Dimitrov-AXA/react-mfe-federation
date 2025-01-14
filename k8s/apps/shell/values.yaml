@@ -1,0 +1,10 @@
+image:
+  repository: quay.io/dimitrovpetar36/shell
+  tag: latest
+
+service:
+  port: 3000
+
+route:
+  enabled: true
+  host: shell-am-hub.apps-crc.testing

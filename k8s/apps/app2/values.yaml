@@ -1,0 +1,10 @@
+image:
+  repository: quay.io/dimitrovpetar36/app2
+  tag: latest
+
+service:
+  port: 3002
+
+route:
+  enabled: true
+  host: app2-am-hub.apps-crc.testing

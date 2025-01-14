@@ -1,0 +1,11 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: shell
+spec:
+  host: {{ .Values.route.host }}
+  to:
+    kind: Service
+    name: shell
+  port:
+    targetPort: {{ .Values.service.port }}
