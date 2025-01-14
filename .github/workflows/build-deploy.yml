@@ -18,10 +18,13 @@ jobs:
       - id: changes
         name: Detect changes
         run: |
-          APPS="[]"
           CHANGED_FILES=$(git diff --name-only HEAD^ HEAD)
-
-          if echo "$CHANGED_FILES" | grep -q -E "applications.yaml|k8s/|Dockerfile"; then
+          
+          # Default to specific apps
+          APPS="[]"
+          
+          # If .github yaml or k8s configs change, build all
+          if echo "$CHANGED_FILES" | grep -q -E ".github|applications.yaml|k8s/|Dockerfile"; then
             APPS='["app1", "app2", "app3", "shell"]'
           else
             TO_BUILD=()
@@ -35,9 +38,11 @@ jobs:
             fi
           fi
           echo "apps=$APPS" >> "$GITHUB_OUTPUT"
+          echo "Matrix apps: $APPS"
 
   build-and-push:
     needs: check-changes
+    if: ${{ fromJson(needs.check-changes.outputs.apps).length > 0 }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
