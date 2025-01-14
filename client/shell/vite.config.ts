@@ -15,19 +15,7 @@ export default defineConfig({
         app2: "http://app2-am-hub.apps-crc.testing/assets/app2.js",
         app3: "http://app3-am-hub.apps-crc.testing/assets/app3.js",
       },
-      shared: {
-        react: {
-          version: '^18.0.0',
-          requiredVersion: '^18.0.0'
-        },
-        'react-dom': {
-          version: '^18.0.0',
-          requiredVersion: '^18.0.0'
-        },
-        'react-router-dom': {
-          version: 'auto'
-        }
-      }
+      shared: ["react", "react-dom","react-router-dom"],
     })
   ],
   server: {

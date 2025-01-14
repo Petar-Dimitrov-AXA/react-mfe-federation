@@ -14,19 +14,7 @@ export default defineConfig({
       exposes: {
         "./App": "./src/App",
       },
-      shared: {
-        react: {
-          version: '^18.0.0',
-          requiredVersion: '^18.0.0'
-        },
-        'react-dom': {
-          version: '^18.0.0',
-          requiredVersion: '^18.0.0'
-        },
-        'react-router-dom': {
-          version: 'auto'
-        }
-      }
+      shared: ["react", "react-dom","react-router-dom"],
     })
   ],
   build: {
