@@ -5,7 +5,7 @@ The server is accessible via web console at:
 
 Log in as administrator:
   Username: kubeadmin
-  Password: VkNRw-6tyE7-DqgYA-vggyy
+  Password: Evqde-SQqHB-cCMUP-vzG6q
 
 Log in as user:
   Username: developer
@@ -14,3 +14,25 @@ Log in as user:
 Use the 'oc' command line interface:
   PS> & crc oc-env | Invoke-Expression
   PS> oc login -u developer https://api.crc.testing:6443
+
+
+
+   oc get route -n openshift-gitops
+  NAME                      HOST/PORT                                                   PATH   SERVICES                  PORT    TERMINATION            WILDCARD
+  argocd-server             argocd-server-openshift-gitops.apps-crc.testing                    argocd-server             https   passthrough/Redirect   None
+  openshift-gitops-server   openshift-gitops-server-openshift-gitops.apps-crc.testing          openshift-gitops-server   https   reencrypt/Redirect     None
+
+
+XpkyjMDYZS2PCqJr8iVanUl9E13sgvdb
+  get password:
+
+  $password = oc get secret argocd-cluster -n openshift-gitops -o jsonpath='{.data.admin\.password}'
+  [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String($password))
+
+    55 oc apply -f argocd-instance.yaml
+    56 oc apply -f argocd-rbac.yaml
+    57 oc apply -f applications.yaml
+    58 oc get applications -n openshift-gitops
+    59 oc get applications -n am-hub
+    60 oc get applications -n openshift-gitops
+    61 oc get route -n openshift-gitops
