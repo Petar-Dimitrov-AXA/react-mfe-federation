@@ -6,49 +6,42 @@ on:
     branches: [ main ]
 
 jobs:
-  detect-changes:
+  check-changes:
     runs-on: ubuntu-latest
     outputs:
-      app1: ${{ steps.filter.outputs.app1 }}
-      app2: ${{ steps.filter.outputs.app2 }}
-      app3: ${{ steps.filter.outputs.app3 }}
-      shell: ${{ steps.filter.outputs.shell }}
-      build_all: ${{ steps.filter.outputs.build_all }}
+      apps: ${{ steps.changes.outputs.apps }}
     steps:
       - uses: actions/checkout@v3
-      - uses: dorny/paths-filter@v2
-        id: filter
         with:
-          filters: |
-            build_all:
-              - 'applications.yaml'
-              - 'k8s/**'
-              - 'Dockerfile'
-            app1:
-              - 'client/app1/**'
-              - 'server/app1/**'
-              - 'libs/**'
-            app2:
-              - 'client/app2/**'
-              - 'server/app2/**'
-              - 'libs/**'
-            app3:
-              - 'client/app3/**'
-              - 'server/app3/**'
-              - 'libs/**'
-            shell:
-              - 'client/shell/**'
-              - 'server/shell/**'
-              - 'libs/**'
+          fetch-depth: 0
+
+      - id: changes
+        name: Detect changes
+        run: |
+          APPS="[]"
+          CHANGED_FILES=$(git diff --name-only HEAD^ HEAD)
+
+          if echo "$CHANGED_FILES" | grep -q -E "applications.yaml|k8s/|Dockerfile"; then
+            APPS='["app1", "app2", "app3", "shell"]'
+          else
+            TO_BUILD=()
+            [[ $(echo "$CHANGED_FILES" | grep -E "client/app1/|server/app1/|libs/") ]] && TO_BUILD+=("app1")
+            [[ $(echo "$CHANGED_FILES" | grep -E "client/app2/|server/app2/|libs/") ]] && TO_BUILD+=("app2")
+            [[ $(echo "$CHANGED_FILES" | grep -E "client/app3/|server/app3/|libs/") ]] && TO_BUILD+=("app3")
+            [[ $(echo "$CHANGED_FILES" | grep -E "client/shell/|server/shell/|libs/") ]] && TO_BUILD+=("shell")
+          
+            if [ ${#TO_BUILD[@]} -gt 0 ]; then
+              APPS=$(printf '%s\n' "${TO_BUILD[@]}" | jq -R . | jq -s .)
+            fi
+          fi
+          echo "apps=$APPS" >> "$GITHUB_OUTPUT"
+
   build-and-push:
-    needs: detect-changes
+    needs: check-changes
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        app: [app1, app2, app3, shell]
-    if: |
-      needs.detect-changes.outputs[format('{0}', matrix.app)] == 'true' || 
-      needs.detect-changes.outputs.build_all == 'true'
+        app: ${{ fromJson(needs.check-changes.outputs.apps) }}
     steps:
       - uses: actions/checkout@v3
 
