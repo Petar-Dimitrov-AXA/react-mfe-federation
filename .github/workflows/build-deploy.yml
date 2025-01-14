@@ -26,7 +26,7 @@ jobs:
           if echo "$CHANGED_FILES" | grep -q -E ".github|applications.yaml|k8s/|Dockerfile"; then
             echo "apps=[\"app1\",\"app2\",\"app3\",\"shell\"]" >> "$GITHUB_OUTPUT"
           else
-            apps=()
+            declare -a apps
           
             if echo "$CHANGED_FILES" | grep -q -E "client/app1/|server/app1/|libs/"; then
               apps+=("app1")
@@ -44,7 +44,15 @@ jobs:
             if [ ${#apps[@]} -eq 0 ]; then
               echo "apps=[]" >> "$GITHUB_OUTPUT"
             else
-              json_array="[$(printf '"%s",' "${apps[@]}" | sed 's/,$/')]"
+              # Convert array to JSON array string without using sed
+              json_array="["
+              for i in "${!apps[@]}"; do
+                if [ $i -gt 0 ]; then
+                  json_array+=","
+                fi
+                json_array+="\"${apps[$i]}\""
+              done
+              json_array+="]"
               echo "apps=$json_array" >> "$GITHUB_OUTPUT"
             fi
           fi
