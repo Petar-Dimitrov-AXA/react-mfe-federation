@@ -6,7 +6,43 @@ on:
     branches: [ main ]
 
 jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      app1: ${{ steps.filter.outputs.app1 }}
+      app2: ${{ steps.filter.outputs.app2 }}
+      app3: ${{ steps.filter.outputs.app3 }}
+      shell: ${{ steps.filter.outputs.shell }}
+      build_all: ${{ steps.filter.outputs.build_all }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            build_all:
+              - 'applications.yaml'
+              - 'k8s/**'
+              - 'Dockerfile'
+            app1:
+              - 'client/app1/**'
+              - 'server/app1/**'
+              - 'libs/**'
+            app2:
+              - 'client/app2/**'
+              - 'server/app2/**'
+              - 'libs/**'
+            app3:
+              - 'client/app3/**'
+              - 'server/app3/**'
+              - 'libs/**'
+            shell:
+              - 'client/shell/**'
+              - 'server/shell/**'
+              - 'libs/**'
   build-and-push:
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs[matrix.app] == 'true' || needs.detect-changes.outputs.build_all == 'true' }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -39,7 +75,6 @@ jobs:
         run: |
           echo "Building for app: ${{ matrix.app }}"
           
-          # Build with both SHA and latest tags
           docker build \
             --build-arg APP_NAME=${{ matrix.app }} \
             --build-arg PORT=${{ steps.set-port.outputs.PORT }} \
@@ -47,26 +82,5 @@ jobs:
             -t "quay.io/dimitrovpetar36/${{ matrix.app }}:latest" \
             -f Dockerfile .
           
-          # Push both tags
           docker push "quay.io/dimitrovpetar36/${{ matrix.app }}:${{ github.sha }}"
           docker push "quay.io/dimitrovpetar36/${{ matrix.app }}:latest"
-
-# setup tag update if needed
-
-#- name: Update Deployment
-#        run: |
-#          # Configure git
-#          git config --global user.name 'GitHub Actions'
-#          git config --global user.email 'actions@github.com'
-#
-#          # Pull latest changes
-#          git pull origin main
-#
-#          # Update values.yaml
-#          yq eval ".image.repository = \"quay.io/dimitrovpetar36/${{ matrix.app }}\"" -i k8s/apps/${{ matrix.app }}/values.yaml
-#          yq eval ".image.tag = \"${{ github.sha }}\"" -i k8s/apps/${{ matrix.app }}/values.yaml
-#
-#          # Add, commit and push
-#          git add k8s/apps/${{ matrix.app }}/values.yaml
-#          git commit -m "Update ${{ matrix.app }} image tag to ${{ github.sha }}"
-#          git push origin main

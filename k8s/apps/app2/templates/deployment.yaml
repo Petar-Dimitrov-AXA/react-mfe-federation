@@ -4,6 +4,11 @@ metadata:
   name: app2
   namespace: {{ .Release.Namespace }}
 spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
   replicas: 1
   selector:
     matchLabels:
