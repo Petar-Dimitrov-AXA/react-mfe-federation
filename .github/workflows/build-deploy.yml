@@ -99,8 +99,14 @@ jobs:
             -t "quay.io/dimitrovpetar36/${{ matrix.app }}:latest" \
             -f Dockerfile .
           
-          docker push "quay.io/dimitrovpetar36/${{ matrix.app }}:${{ github.sha }}"
-          docker push "quay.io/dimitrovpetar36/${{ matrix.app }}:latest"
+          for i in 1 2 3; do
+            if docker push "quay.io/dimitrovpetar36/${{ matrix.app }}:${{ github.sha }}" && \
+               docker push "quay.io/dimitrovpetar36/${{ matrix.app }}:latest"; then
+              break
+            fi
+            echo "Push failed, attempt $i/3"
+            sleep 10
+          done
 
       - name: Update image digest
         if: success()
