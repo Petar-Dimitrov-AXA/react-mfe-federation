@@ -17,12 +17,10 @@ spec:
     metadata:
       labels:
         app: shell
-      annotations:
-        rollme: {{ randAlphaNum 5 | quote }}
     spec:
       containers:
         - name: shell
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.repository }}@{{ .Values.image.digest }}"
           imagePullPolicy: Always
           ports:
             - containerPort: {{ .Values.service.port }}

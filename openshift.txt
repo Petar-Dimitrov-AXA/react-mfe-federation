@@ -16,7 +16,6 @@ Use the 'oc' command line interface:
   PS> oc login -u developer https://api.crc.testing:6443
 
 
-
    oc get route -n openshift-gitops
   NAME                      HOST/PORT                                                   PATH   SERVICES                  PORT    TERMINATION            WILDCARD
   argocd-server             argocd-server-openshift-gitops.apps-crc.testing                    argocd-server             https   passthrough/Redirect   None

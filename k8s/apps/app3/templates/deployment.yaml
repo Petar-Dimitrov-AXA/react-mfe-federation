@@ -17,12 +17,10 @@ spec:
     metadata:
       labels:
         app: app3
-      annotations:
-        rollme: {{ randAlphaNum 5 | quote }}
     spec:
       containers:
         - name: app3
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.repository }}@{{ .Values.image.digest }}"
           imagePullPolicy: Always
           ports:
             - containerPort: {{ .Values.service.port }}
