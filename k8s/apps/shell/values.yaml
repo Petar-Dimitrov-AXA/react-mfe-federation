@@ -1,6 +1,6 @@
 image:
   repository: quay.io/dimitrovpetar36/shell
-  digest: sha256:67af0a07ace5ba49c953e2fb01a1f88848c2073ab947ff0e17cae0967dc82af1 # Will be updated by automation
+  digest: sha256:06b427ec7193967284ffcbb62cb7eea12822deed2b56d6821ce6fc1ee3f03e4c # Will be updated by automation
 service:
   port: 3000
 route:
