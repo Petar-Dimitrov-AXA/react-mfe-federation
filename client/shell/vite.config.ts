@@ -22,16 +22,25 @@ export default defineConfig({
     port: 3000
   },
   build: {
-    modulePreload: false,
     target: "esnext",
     minify: false,
     cssCodeSplit: false,
     outDir: "dist",
+    emptyOutDir: true,
+    sourcemap: false,
+    write: true,
     rollupOptions: {
+      preserveEntrySignatures: 'strict',
+      input: {
+        main: resolve(__dirname, 'index.html')
+
+      },
       output: {
-        assetFileNames: "assets/[name].[ext]",
-        entryFileNames: "assets/[name].js",
-        chunkFileNames: "assets/[name].js",
+        dir: 'dist',
+        format: 'esm',
+        entryFileNames: 'assets/[name].js',
+        chunkFileNames: 'assets/[name].[hash].js',
+        assetFileNames: 'assets/[name].[hash].[ext]'
       }
     }
   },
@@ -40,4 +49,4 @@ export default defineConfig({
       '@react-mfe-federation/shared-ui': resolve(__dirname, '../../libs/shared-ui/src'),
     }
   }
-})
+});
