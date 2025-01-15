@@ -10,12 +10,7 @@ function App() {
         <>
             <div>
 
-                <h1> Hello From App1 </h1>
-                <h2> Add update</h2>
-
-                <br/>
-
-                <p><b>Petat Dimitrov</b></p>
+                <h1> Hello From App1  - Swiss</h1>
 
                 <a href="https://vite.dev" target="_blank">
                     <img src={viteLogo} className="logo" alt="Vite logo"/>
