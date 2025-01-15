@@ -1,10 +1,8 @@
 image:
   repository: quay.io/dimitrovpetar36/app3
-  digest: sha256:... # Will be updated by automation
-
+  digest: sha256:9bd347f9464d901f1f283597ea4d0a1265e775a05473e9e2de498a36f2e0d058 # Will be updated by automation
 service:
   port: 3003
-
 route:
   enabled: true
   host: app3-am-hub.apps-crc.testing
