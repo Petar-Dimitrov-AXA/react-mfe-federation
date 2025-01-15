@@ -10,6 +10,8 @@ services:
       - "3001:3001"
     environment:
       - SERVER_PORT=3001
+    networks:
+      - mfe-network
 
   app2:
     build:
@@ -22,6 +24,8 @@ services:
       - "3002:3002"
     environment:
       - SERVER_PORT=3002
+    networks:
+      - mfe-network
 
   app3:
     build:
@@ -34,6 +38,8 @@ services:
       - "3003:3003"
     environment:
       - SERVER_PORT=3003
+    networks:
+      - mfe-network
 
   shell:
     build:
@@ -46,3 +52,9 @@ services:
       - "3000:3000"
     environment:
       - SERVER_PORT=3000
+    networks:
+      - mfe-network
+
+networks:
+  mfe-network:
+    driver: bridge

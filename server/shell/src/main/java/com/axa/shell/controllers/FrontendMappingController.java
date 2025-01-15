@@ -8,33 +8,27 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "${spring.application.name}")
+@RequestMapping(path = "/")
 @RequiredArgsConstructor
 public class FrontendMappingController {
 
     private final FrontendCache frontendCache;
 
-    public static final String ROOT = "/";
-
     /**
-     * Inject system properties into the index.html that bootstraps the react-client.
-     *
-     * @return String html page
+     * Serve the shell app for the root path and any non-static paths
      */
-    @GetMapping(produces = "text/html")
-    public String getRootPage() {
-        return frontendCache.getReplacedFrontendApp();
-    }
-
-    @GetMapping(value = ROOT, produces = "text/html")
-    public String getRootPageToo() {
+    @GetMapping(value = {
+            "/",                    // Root path
+            "/app*",               // Direct app routes (e.g., /app1)
+            "/app*/**",            // App routes with sub-paths (e.g., /app1/dashboard)
+            "/{path:[^.]*}"        // Any path without a file extension
+    }, produces = "text/html")
+    public String serveApp() {
         return frontendCache.getReplacedFrontendApp();
     }
 
     /**
-     * Serve Javascript
-     *
-     * @return String getJS
+     * Handle static resources
      */
     @GetMapping(value = "/static/{file}.js", produces = "application/javascript;charset=UTF-8")
     public String getJS(HttpServletResponse response, @PathVariable("file") String file) {
@@ -42,11 +36,6 @@ public class FrontendMappingController {
         return frontendCache.getFileContent("static/" + file + ".js");
     }
 
-    /**
-     * Serve CSS
-     *
-     * @return String getCSS
-     */
     @GetMapping(value = "/static/{file}.css", produces = "text/css;charset=UTF-8")
     public String getCSS(HttpServletResponse response, @PathVariable("file") String file) {
         response.setHeader("content-type", "text/css");
@@ -63,13 +52,11 @@ public class FrontendMappingController {
         return frontendCache.getFileContent("static/" + file);
     }
 
-    @GetMapping(value = "/{path:^(?!swagger-ui).*}", produces = "text/html")
-    public String getEverythingElseExceptSwaggerUi() {
-        return frontendCache.getReplacedFrontendApp();
-    }
-
-    @GetMapping(value = "/{path:^(?!swagger-ui).*}/**", produces = "text/html")
-    public String getEverythingElseInclSubpathsExceptSwaggerUi() {
-        return frontendCache.getReplacedFrontendApp();
+    /**
+     * Handle favicon request
+     */
+    @GetMapping("/favicon.ico")
+    public String getFavicon() {
+        return frontendCache.getFileContent("static/favicon.ico");
     }
 }
