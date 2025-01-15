@@ -1,10 +1,8 @@
 image:
   repository: quay.io/dimitrovpetar36/app2
-  digest: sha256:... # Will be updated by automation
-
+  digest: sha256:357d30b507b1fe3d86de87a9f640c360b5862bdbfbf790367702b346e9476c33 # Will be updated by automation
 service:
   port: 3002
-
 route:
   enabled: true
   host: app2-am-hub.apps-crc.testing
