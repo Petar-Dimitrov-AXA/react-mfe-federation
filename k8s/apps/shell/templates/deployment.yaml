@@ -17,8 +17,6 @@ spec:
     metadata:
       labels:
         app: shell
-      annotations:
-        rollme: {{ randAlphaNum 5 | quote }}
     spec:
       containers:
         - name: shell
