@@ -1,6 +1,6 @@
 image:
   repository: quay.io/dimitrovpetar36/shell
-  tag: latest
+  digest: sha256:... # Will be updated by automation
 
 service:
   port: 3000

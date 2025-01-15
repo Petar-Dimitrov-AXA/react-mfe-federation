@@ -100,3 +100,18 @@ jobs:
           
           docker push "quay.io/dimitrovpetar36/${{ matrix.app }}:${{ github.sha }}"
           docker push "quay.io/dimitrovpetar36/${{ matrix.app }}:latest"
+
+      - name: Update image digest
+        if: success()
+        run: |
+          DIGEST=$(docker inspect quay.io/dimitrovpetar36/${{ matrix.app }}:${{ github.sha }} --format='{{index .RepoDigests 0}}' | cut -d'@' -f2)
+          yq e ".image.digest = \"${DIGEST}\"" -i k8s/apps/${{ matrix.app }}/values.yaml
+
+      - name: Commit and push updated values
+        if: success()
+        run: |
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
+          git add k8s/apps/${{ matrix.app }}/values.yaml
+          git commit -m "Update ${{ matrix.app }} image digest to ${DIGEST}"
+          git push
