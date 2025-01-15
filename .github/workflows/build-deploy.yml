@@ -107,6 +107,13 @@ jobs:
         run: |
           DIGEST=$(docker inspect quay.io/dimitrovpetar36/${{ matrix.app }}:${{ github.sha }} --format='{{index .RepoDigests 0}}' | cut -d'@' -f2)
           yq e ".image.digest = \"${DIGEST}\"" -i k8s/apps/${{ matrix.app }}/values.yaml
+          echo "${{ matrix.app }}:$DIGEST" >> /tmp/digests.txt
+
+      - name: Upload digests
+        uses: actions/upload-artifact@v3
+        with:
+          name: digests
+          path: /tmp/digests.txt
 
   commit-changes:
     needs: build-and-push
@@ -117,11 +124,17 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Download digests
+        uses: actions/download-artifact@v3
+        with:
+          name: digests
+          path: /tmp
+
       - name: Commit and push values
         run: |
           git config --global user.name 'GitHub Actions'
           git config --global user.email 'actions@github.com'
           git pull origin main
           git add k8s/apps/*/values.yaml
-          git commit -m "Update image digests for changed applications"
+          git commit -m "Update image digests: $(cat /tmp/digests.txt)"
           git push || (git pull --rebase origin main && git push)
