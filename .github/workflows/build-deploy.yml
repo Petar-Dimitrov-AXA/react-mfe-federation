@@ -44,6 +44,7 @@ jobs:
             if [ ${#apps[@]} -eq 0 ]; then
               echo "apps=[]" >> "$GITHUB_OUTPUT"
             else
+              # Convert array to JSON array string without using sed
               json_array="["
               for i in "${!apps[@]}"; do
                 if [ $i -gt 0 ]; then
@@ -101,43 +102,3 @@ jobs:
           
           docker push "quay.io/dimitrovpetar36/${{ matrix.app }}:${{ github.sha }}"
           docker push "quay.io/dimitrovpetar36/${{ matrix.app }}:latest"
-
-      - name: Update image digest
-        if: success()
-        run: |
-          DIGEST=$(docker inspect quay.io/dimitrovpetar36/${{ matrix.app }}:${{ github.sha }} --format='{{index .RepoDigests 0}}' | cut -d'@' -f2)
-          yq e ".image.digest = \"${DIGEST}\"" -i k8s/apps/${{ matrix.app }}/values.yaml
-          echo "${{ matrix.app }}:$DIGEST" >> /tmp/digests.txt
-
-      - name: Upload digests
-        uses: actions/upload-artifact@v3
-        with:
-          name: digests-${{ matrix.app }}
-          path: /tmp/digests.txt
-
-  commit-changes:
-    needs: build-and-push
-    runs-on: ubuntu-latest
-    if: success()
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Download all digests
-        uses: actions/download-artifact@v3
-        with:
-          path: /tmp/digests
-
-      - name: Commit and push values
-        run: |
-          git config --global user.name 'GitHub Actions'
-          git config --global user.email 'actions@github.com'
-          
-          # Create combined message from all digests
-          ALL_DIGESTS=$(cat /tmp/digests/digests-*/* | tr '\n' ' ')
-          
-          git pull origin main
-          git add k8s/apps/*/values.yaml
-          git commit -m "Update image digests: ${ALL_DIGESTS}"
-          git push || (git pull --rebase origin main && git push)
