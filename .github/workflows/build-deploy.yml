@@ -60,11 +60,10 @@ jobs:
     needs: check-changes
     if: needs.check-changes.outputs.apps != '[]'
     runs-on: ubuntu-latest
-    outputs:
-      matrix-apps: ${{ needs.check-changes.outputs.apps }}
     strategy:
       matrix:
         app: ${{ fromJson(needs.check-changes.outputs.apps) }}
+      max-parallel: 1
     steps:
       - uses: actions/checkout@v3
         with:
@@ -111,27 +110,14 @@ jobs:
           yq e ".image.digest = \"${DIGEST}\"" -i k8s/apps/${{ matrix.app }}/values.yaml
           git config --global user.name 'GitHub Actions'
           git config --global user.email 'actions@github.com'
-          git add k8s/apps/${{ matrix.app }}/values.yaml
-
-  commit-changes:
-    needs: build-and-push
-    runs-on: ubuntu-latest
-    if: needs.build-and-push.outputs.matrix-apps != '[]'
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Commit and push values
-        run: |
-          git config --global user.name 'GitHub Actions'
-          git config --global user.email 'actions@github.com'
           git pull origin main
-          git add k8s/apps/*/values.yaml
-          if git diff --staged --quiet; then
-            echo "No changes to commit"
-            exit 0
-          else
-            git commit -m "Update image digests for changed applications"
+          git add k8s/apps/${{ matrix.app }}/values.yaml
+          
+          # Store digest in a temporary file
+          echo "${{ matrix.app }}:$DIGEST" >> /tmp/digests.txt
+          
+          # If this is the last app in the matrix
+          if [ "${{ matrix.app }}" = "$(echo '${{ toJSON(needs.check-changes.outputs.apps) }}' | jq -r '.[-1]' | tr -d '\\' )" ]; then
+            git commit -m "Update image digests: $(cat /tmp/digests.txt)"
             git push || (git pull --rebase origin main && git push)
           fi
