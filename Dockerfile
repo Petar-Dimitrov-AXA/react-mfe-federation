@@ -21,7 +21,7 @@ COPY ./server/${APP_NAME}/.mvn ./.mvn
 COPY ./server/${APP_NAME}/src ./src
 
 # Create the static directory
-RUN mkdir -p src/main/resources/staic
+RUN mkdir -p src/main/resources/static
 
 # Copy the entire dist folder content to static
 COPY --from=frontend-builder /app/client/${APP_NAME}/dist/ src/main/resources/static
