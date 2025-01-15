@@ -44,7 +44,6 @@ jobs:
             if [ ${#apps[@]} -eq 0 ]; then
               echo "apps=[]" >> "$GITHUB_OUTPUT"
             else
-              # Convert array to JSON array string without using sed
               json_array="["
               for i in "${!apps[@]}"; do
                 if [ $i -gt 0 ]; then
@@ -66,6 +65,8 @@ jobs:
         app: ${{ fromJson(needs.check-changes.outputs.apps) }}
     steps:
       - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Login to Quay.io
         uses: docker/login-action@v3
@@ -105,6 +106,7 @@ jobs:
         if: success()
         run: |
           DIGEST=$(docker inspect quay.io/dimitrovpetar36/${{ matrix.app }}:${{ github.sha }} --format='{{index .RepoDigests 0}}' | cut -d'@' -f2)
+          git pull origin main
           yq e ".image.digest = \"${DIGEST}\"" -i k8s/apps/${{ matrix.app }}/values.yaml
 
       - name: Commit and push updated values
@@ -112,6 +114,7 @@ jobs:
         run: |
           git config --global user.name 'GitHub Actions'
           git config --global user.email 'actions@github.com'
+          git pull origin main
           git add k8s/apps/${{ matrix.app }}/values.yaml
           git commit -m "Update ${{ matrix.app }} image digest to ${DIGEST}"
-          git push
+          git push || (git pull --rebase origin main && git push)
