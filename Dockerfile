@@ -7,11 +7,12 @@ COPY package*.json ./
 COPY tsconfig*.json ./
 COPY ./client ./client
 COPY ./libs ./libs
+
 RUN npm install
-# Use tsc --build first to handle project references properly
-# Then run the app-specific build
+RUN echo "Building libs"
 RUN npm run build:libs
-RUN npm run build
+RUN echo "Building ${APP_NAME}"
+RUN npm run build --workspace="@react-mfe-federation/${APP_NAME}"
 
 FROM eclipse-temurin:21-jdk-alpine AS backend-builder
 ARG APP_NAME
