@@ -1,6 +1,6 @@
 image:
   repository: quay.io/dimitrovpetar36/app3
-  digest: sha256:534f4d63e61fdb1f61b8d40b90064f09b22e0571578b857147857b1e86f2e088 # Will be updated by automation
+  digest: sha256:2842474e2260432a2c3ed78bc28421eff250498ce8df0b0ce948252b4b4ff808 # Will be updated by automation
 service:
   port: 3003
 route:
