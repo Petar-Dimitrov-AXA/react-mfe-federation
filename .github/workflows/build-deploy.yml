@@ -23,7 +23,7 @@ jobs:
           echo "Changed files:"
           echo "$CHANGED_FILES"
           
-          if echo "$CHANGED_FILES" | grep -q -E ".github|applications.yaml|k8s/|Dockerfile"; then
+          if echo "$CHANGED_FILES" | grep -q -E ".github|applications.yaml|k8s/|config/|Dockerfile"; then
             echo "apps=[\"app1\",\"app2\",\"app3\",\"shell\"]" >> "$GITHUB_OUTPUT"
           else
             declare -a apps
