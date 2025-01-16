@@ -1,13 +1,28 @@
-const { execSync } = require("child_process");
-const fs = require("fs");
-const path = require("path");
+// libs/build-libs.js
+const { execSync } = require('child_process');
+const path = require('path');
+const fs = require('fs');
 
-const libsDir = path.join(__dirname, "./");
+const libsDir = path.join(__dirname);
+const libs = fs.readdirSync(libsDir)
+    .filter(file => fs.statSync(path.join(libsDir, file)).isDirectory() && file !== 'build-config');
 
-fs.readdirSync(libsDir).forEach((lib) => {
-    const libPath = path.join(libsDir, lib);
-    if (fs.statSync(libPath).isDirectory()) {
-        console.log(`Building ${lib}...`);
-        execSync("npm run build", { cwd: libPath, stdio: "inherit" });
+libs.forEach(lib => {
+    console.log(`Building ${lib}...`);
+    try {
+        // First build TypeScript declarations
+        execSync('tsc --project tsconfig.json --declaration --emitDeclarationOnly --outDir dist', {
+            cwd: path.join(libsDir, lib),
+            stdio: 'inherit'
+        });
+
+        // Then run the full build
+        execSync('vite build', {
+            cwd: path.join(libsDir, lib),
+            stdio: 'inherit'
+        });
+    } catch (error) {
+        console.error(`Failed to build ${lib}:`, error);
+        process.exit(1);
     }
 });
