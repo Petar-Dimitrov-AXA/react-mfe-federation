@@ -8,17 +8,18 @@ export default defineConfig({
         react(),
         dts({
             insertTypesEntry: true,
+            outDir: 'dist',
         }),
     ],
     build: {
         emptyOutDir: true,
         lib: {
             entry: resolve(__dirname, 'src/index.ts'),
-            name: 'SharedUI', 
-            formats: ['es'], 
+            name: 'SharedUI',
+            formats: ['es'],
             fileName: (format) => `shared-ui.${format}.js`,
         },
-        outDir: resolve(__dirname, './dist/shared-ui'), 
+        outDir: 'dist/shared-ui', // Match with tsconfig's outDir
         rollupOptions: {
             external: ['react', 'react-dom'],
             output: {
