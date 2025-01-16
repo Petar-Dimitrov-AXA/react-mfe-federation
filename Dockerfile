@@ -7,9 +7,11 @@ COPY package*.json ./
 COPY tsconfig*.json ./
 COPY ./client ./client
 COPY ./libs ./libs
-#COPY vite.config.ts .
 RUN npm install
-RUN npm run build
+# Use tsc --build first to handle project references properly
+RUN npx tsc --build
+# Then run the app-specific build
+RUN npm run build --workspace=@react-mfe-federation/${APP_NAME}
 
 FROM eclipse-temurin:21-jdk-alpine AS backend-builder
 ARG APP_NAME
