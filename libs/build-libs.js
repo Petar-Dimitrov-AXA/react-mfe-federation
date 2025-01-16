@@ -1,4 +1,3 @@
-// libs/build-libs.js
 const { execSync } = require('child_process');
 const path = require('path');
 const fs = require('fs');
@@ -10,14 +9,7 @@ const libs = fs.readdirSync(libsDir)
 libs.forEach(lib => {
     console.log(`Building ${lib}...`);
     try {
-        // First build TypeScript declarations
-        execSync('tsc --project tsconfig.json --declaration --emitDeclarationOnly --outDir dist', {
-            cwd: path.join(libsDir, lib),
-            stdio: 'inherit'
-        });
-
-        // Then run the full build
-        execSync('vite build', {
+        execSync('npm run build', {
             cwd: path.join(libsDir, lib),
             stdio: 'inherit'
         });

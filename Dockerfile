@@ -14,7 +14,6 @@ RUN npm install
 RUN echo "Building libs"
 RUN npm run build:libs
 RUN echo "Building ${APP_NAME}"
-# Use quotes around the workspace name to handle special characters
 RUN npm run build -w "@react-mfe-federation/${APP_NAME}"
 
 FROM eclipse-temurin:21-jdk-alpine AS backend-builder
