@@ -6,6 +6,7 @@ ARG APP_NAME
 WORKDIR /app
 COPY package*.json ./
 COPY tsconfig*.json ./
+COPY config/ ./config
 COPY ./client ./client
 COPY ./libs ./libs
 
