@@ -9,9 +9,8 @@ COPY ./client ./client
 COPY ./libs ./libs
 RUN npm install
 # Use tsc --build first to handle project references properly
-RUN npx tsc --build
 # Then run the app-specific build
-RUN npm run build --workspace=@react-mfe-federation/${APP_NAME}
+RUN npm run build
 
 FROM eclipse-temurin:21-jdk-alpine AS backend-builder
 ARG APP_NAME
