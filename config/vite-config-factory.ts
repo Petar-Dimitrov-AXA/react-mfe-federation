@@ -3,6 +3,7 @@ import type {ModuleFormat} from 'rollup';
 import react from '@vitejs/plugin-react';
 import federation from '@originjs/vite-plugin-federation';
 import {resolve} from 'path';
+import dts from "vite-plugin-dts";
 
 interface AppConfig {
     name: string;
@@ -80,20 +81,24 @@ export function createViteConfig({
     if (isLib) {
         return {
             ...baseConfig,
-            plugins: [react()],
+            plugins: [
+                react(),
+                dts({
+                    insertTypesEntry: true,
+                }),
+            ],
             build: {
-                emptyOutDir: false,
+                emptyOutDir: true,
                 lib: {
                     entry: resolve(projectRoot, 'src/index.ts'),
                     name,
                     formats: ['es'],
                     fileName: (format) => `${name}.${format}.js`,
                 },
-                outDir: 'dist',
+                outDir: resolve(projectRoot, 'dist'),
                 rollupOptions: {
                     external: ['react', 'react-dom'],
                     output: {
-                        format: 'es' as ModuleFormat,
                         globals: {
                             react: 'React',
                             'react-dom': 'ReactDOM',
