@@ -10,6 +10,7 @@ COPY ./libs ./libs
 RUN npm install
 # Use tsc --build first to handle project references properly
 # Then run the app-specific build
+RUN npm run build:libs
 RUN npm run build
 
 FROM eclipse-temurin:21-jdk-alpine AS backend-builder

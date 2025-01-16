@@ -7,6 +7,7 @@
     "dev-app1": "npm run dev --workspace=@react-mfe-federation/app1",
     "dev-app2": "npm run dev --workspace=@react-mfe-federation/app2",
     "dev-app3": "npm run dev --workspace=@react-mfe-federation/app3",
+    "build:libs": "node libs/build-libs.js",
     "build": "npm run build --workspaces --if-present",
     "preview": "npm run preview --workspace=@react-mfe-federation/shell",
     "start-all": "npm run start-all-concurrently",
