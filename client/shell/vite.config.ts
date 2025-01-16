@@ -47,6 +47,6 @@ export default defineConfig({
   resolve: {
     alias: {
       '@react-mfe-federation/shared-ui': resolve(__dirname, '../../libs/shared-ui/src'),
-    }
+      }
   }
 });
