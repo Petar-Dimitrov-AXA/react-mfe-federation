@@ -2,6 +2,7 @@ ARG APP_NAME
 ARG PORT
 
 FROM node:20-alpine AS frontend-builder
+ARG APP_NAME
 WORKDIR /app
 COPY package*.json ./
 COPY tsconfig*.json ./
@@ -12,7 +13,8 @@ RUN npm install
 RUN echo "Building libs"
 RUN npm run build:libs
 RUN echo "Building ${APP_NAME}"
-RUN npm run build --workspace="@react-mfe-federation/${APP_NAME}"
+# Use quotes around the workspace name to handle special characters
+RUN npm run build -w "@react-mfe-federation/${APP_NAME}"
 
 FROM eclipse-temurin:21-jdk-alpine AS backend-builder
 ARG APP_NAME
