@@ -7,9 +7,8 @@ COPY package*.json ./
 COPY tsconfig*.json ./
 COPY ./client ./client
 COPY ./libs ./libs
-
+#COPY vite.config.ts .
 RUN npm install
-RUN tsc --build
 RUN npm run build
 
 FROM eclipse-temurin:21-jdk-alpine AS backend-builder
