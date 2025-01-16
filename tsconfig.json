@@ -1,33 +1,10 @@
 {
-    "compilerOptions": {
-      "target": "ESNext",
-      "useDefineForClassFields": true,
-      "lib": [
-        "DOM",
-        "DOM.Iterable",
-        "ESNext"
-      ],
-      "allowJs": false,
-      "skipLibCheck": true,
-      "esModuleInterop": false,
-      "allowSyntheticDefaultImports": true,
-      "strict": true,
-      "forceConsistentCasingInFileNames": true,
-      "module": "ESNext",
-      "moduleResolution": "Node",
-      "resolveJsonModule": true,
-      "isolatedModules": true,
-      "noEmit": false,
-      "jsx": "react-jsx",
-      "baseUrl": ".",
-      "sourceMap": false
-    },
-    "include": [
-      "client/*/src",
-      "libs/*/src"
-    ],
-    "exclude": [
-      "node_modules"
-    ],
-  }
-  
+  "files": [],
+  "references": [
+    { "path": "./client/shell" },
+    { "path": "./client/app1" },
+    { "path": "./client/app2" },
+    { "path": "./client/app3" },
+    { "path": "./libs/shared-ui" }
+  ]
+}

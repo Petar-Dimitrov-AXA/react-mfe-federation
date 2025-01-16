@@ -1,10 +1,13 @@
 {
-    "extends": "../../tsconfig.json",
-    "compilerOptions": {
-      "composite": true,
-      "outDir": "./dist",
-      "noEmit": false
-    },
-    "include": ["src"],
-    "exclude": ["node_modules"]
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "emitDeclarationOnly": true,
+    "noEmit": false
+  },
+  "include": ["src/**/*"]
 }

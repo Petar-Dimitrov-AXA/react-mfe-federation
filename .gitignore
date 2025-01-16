@@ -3,6 +3,9 @@ node_modules
 .idea
 .vscode/*
 
+
+
+client/*/.tsbuildinfo
 client/*/node_modules
 client/*/dist
 client/*/coverage

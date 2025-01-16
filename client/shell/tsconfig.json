@@ -1,13 +1,10 @@
 {
-  "extends": "../../tsconfig.json",
-  "files": [],
-  "references": [
-    { "path": "../../libs/shared-ui" },
-  ],
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@react-mfe-federation/shared-ui": ["../../libs/shared-ui/src/index.ts"],
-    }
-  }
+    "composite": true,
+  },
+  "include": ["src"],
+  "references": [
+    { "path": "../../libs/shared-ui" }
+  ]
 }
