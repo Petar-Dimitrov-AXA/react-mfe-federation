@@ -3,16 +3,13 @@ ARG PORT
 
 FROM node:20-alpine AS frontend-builder
 WORKDIR /app
-
-# Copy package files first for better caching
 COPY package*.json ./
-COPY ./libs ./libs
-COPY ./client/${APP_NAME} ./client/${APP_NAME}
 COPY tsconfig*.json ./
-
-# Install and build
+COPY ./client ./client
+COPY ./libs ./libs
+#COPY vite.config.ts .
 RUN npm install
-RUN npm run build --workspace=@react-mfe-federation/${APP_NAME}
+RUN npm run build
 
 FROM eclipse-temurin:21-jdk-alpine AS backend-builder
 ARG APP_NAME
